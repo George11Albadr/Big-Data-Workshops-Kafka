@@ -28,7 +28,7 @@ Apache Kafka es una plataforma distribuida de streaming diseñada para manejar g
 
 ### **Paso 1: Instalar Docker y Docker Compose**
 
-Asegúrate de tener Docker y Docker Compose instalados en tu máquina. Puedes seguir las instrucciones oficiales en [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/).
+Asegúrte de tener Docker y Docker Compose instalados en tu máquina. Puedes seguir las instrucciones oficiales en [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/).
 
 ### **Paso 2: Crear el archivo `docker-compose.yml`**
 
@@ -44,7 +44,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
-    image: 'apache/kafka:3.9.0'
+    image: 'confluentinc/cp-kafka:7.4.0'
     depends_on:
       - zookeeper
     ports:
@@ -78,14 +78,14 @@ docker-compose up -d
 
 2. **Listar topics en Kafka:**
    ```bash
-   docker exec -it kafka kafka-topics.sh --list --bootstrap-server localhost:9092
+   docker exec -it kafka kafka-topics --list --bootstrap-server localhost:9092
    ```
    Este comando no debe generar errores.
 
 3. **Probar conexión:**
    Publica un mensaje en un topic temporal:
    ```bash
-   docker exec -it kafka kafka-console-producer.sh --broker-list localhost:9092 --topic test-topic
+   docker exec -it kafka kafka-console-producer --broker-list localhost:9092 --topic test-topic
    ```
    Escribe un mensaje como:
    ```
@@ -93,7 +93,7 @@ docker-compose up -d
    ```
    Luego, consúmelo:
    ```bash
-   docker exec -it kafka kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test-topic --from-beginning
+   docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic test-topic --from-beginning
    ```
    Si ves el mensaje publicado, la configuración es correcta.
 
@@ -115,7 +115,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka1:
-    image: 'apache/kafka:3.9.0'
+    image: 'confluentinc/cp-kafka:7.4.0'
     depends_on:
       - zookeeper
     ports:
@@ -127,7 +127,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
 
   kafka2:
-    image: 'apache/kafka:3.9.0'
+    image: 'confluentinc/cp-kafka:7.4.0'
     depends_on:
       - zookeeper
     ports:
@@ -139,7 +139,7 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
 
   kafka3:
-    image: 'apache/kafka:3.9.0'
+    image: 'confluentinc/cp-kafka:7.4.0'
     depends_on:
       - zookeeper
     ports:
@@ -165,7 +165,7 @@ Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
 
 1. **Crear un topic simple:**
    ```bash
-   docker exec -it kafka1 kafka-topics.sh --create \
+   docker exec -it kafka1 kafka-topics --create \
      --topic simple-topic \
      --bootstrap-server localhost:9092 \
      --partitions 1 \
@@ -174,7 +174,7 @@ Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
 
 2. **Crear un topic con particiones y réplicas:**
    ```bash
-   docker exec -it kafka1 kafka-topics.sh --create \
+   docker exec -it kafka1 kafka-topics --create \
      --topic replicated-topic \
      --bootstrap-server localhost:9092 \
      --partitions 3 \
@@ -183,7 +183,7 @@ Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
 
 3. **Listar los topics existentes:**
    ```bash
-   docker exec -it kafka1 kafka-topics.sh --list --bootstrap-server localhost:9092
+   docker exec -it kafka1 kafka-topics --list --bootstrap-server localhost:9092
    ```
 
 ---
@@ -249,5 +249,4 @@ for message in consumer:
 ---
 
 Esta guía está completa y optimizada para un taller práctico. Si necesitas ajustes o contenido adicional, házmelo saber.
-
 
