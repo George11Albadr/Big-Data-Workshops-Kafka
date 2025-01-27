@@ -248,5 +248,4 @@ for message in consumer:
 
 ---
 
-Esta guía está completa y optimizada para un taller práctico. Si necesitas ajustes o contenido adicional, házmelo saber.
 
