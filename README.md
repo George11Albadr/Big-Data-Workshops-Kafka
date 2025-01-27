@@ -39,12 +39,14 @@ version: '3.8'
 services:
   zookeeper:
     image: 'confluentinc/cp-zookeeper:7.4.0'
+    hostname: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka:
     image: 'confluentinc/cp-kafka:7.4.0'
+    hostname: kafka
     depends_on:
       - zookeeper
     ports:
@@ -52,7 +54,8 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 ```
 
@@ -74,7 +77,7 @@ docker-compose up -d
    ```bash
    docker ps
    ```
-   Asegúrate de que ambos servicios (Zookeeper y Kafka) estén en ejecución.
+   Asegúrte de que ambos servicios (Zookeeper y Kafka) estén en ejecución.
 
 2. **Listar topics en Kafka:**
    ```bash
@@ -110,12 +113,14 @@ version: '3.8'
 services:
   zookeeper:
     image: 'confluentinc/cp-zookeeper:7.4.0'
+    hostname: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
   kafka1:
     image: 'confluentinc/cp-kafka:7.4.0'
+    hostname: kafka1
     depends_on:
       - zookeeper
     ports:
@@ -123,11 +128,14 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
 
   kafka2:
     image: 'confluentinc/cp-kafka:7.4.0'
+    hostname: kafka2
     depends_on:
       - zookeeper
     ports:
@@ -135,11 +143,14 @@ services:
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:9093
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
 
   kafka3:
     image: 'confluentinc/cp-kafka:7.4.0'
+    hostname: kafka3
     depends_on:
       - zookeeper
     ports:
@@ -147,8 +158,23 @@ services:
     environment:
       KAFKA_BROKER_ID: 3
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:9094
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9094
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    hostname: kafdrop
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka1:9092,kafka2:9093,kafka3:9094"
+      JVM_OPTS: "-Xms32M -Xmx64M"
 ```
 
 ### **Paso 2: Levantar el clúster**
@@ -159,6 +185,21 @@ docker-compose up -d
 ```
 Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
 
+### **Paso 3: Implementar Kafdrop para la visualización del clúster**
+
+1. **Levantar Kafdrop junto con el clúster:**
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Acceder a Kafdrop:**
+   Una vez levantado, abre un navegador y dirígete a `http://localhost:9000`.
+
+3. **Funciones principales de Kafdrop:**
+   - Explorar topics, particiones y mensajes.
+   - Ver consumidores y offsets.
+   - Consultar información sobre brokers y configuraciones del clúster.
+
 ---
 
 ## **4. Configuración de Topics**
@@ -167,7 +208,7 @@ Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
    ```bash
    docker exec -it kafka1 kafka-topics --create \
      --topic simple-topic \
-     --bootstrap-server localhost:9092 \
+     --bootstrap-server kafka1:9092 \
      --partitions 1 \
      --replication-factor 1
    ```
@@ -176,76 +217,23 @@ Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
    ```bash
    docker exec -it kafka1 kafka-topics --create \
      --topic replicated-topic \
-     --bootstrap-server localhost:9092 \
+     --bootstrap-server kafka1:9092 \
      --partitions 3 \
      --replication-factor 3
    ```
 
 3. **Listar los topics existentes:**
    ```bash
-   docker exec -it kafka1 kafka-topics --list --bootstrap-server localhost:9092
+   docker exec -it kafka1 kafka-topics --list --bootstrap-server kafka1:9092
    ```
 
 ---
 
-## **5. Scripts en Python**
-
-### **Producer (envío de mensajes)**
-
-Crea un archivo `producer.py`:
-
-```python
-from kafka import KafkaProducer
-import json
-
-producer = KafkaProducer(
-    bootstrap_servers='localhost:9092',
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
-)
-
-messages = [
-    {"type": "text", "content": "Hello, Kafka!"},
-    {"type": "json", "content": {"key": "value"}},
-    {"type": "avro", "content": {"schema": "example"}}
-]
-
-for msg in messages:
-    producer.send('simple-topic', value=msg)
-    print(f"Message sent: {msg}")
-
-producer.flush()
-```
-
-### **Consumer (lectura de mensajes)**
-
-Crea un archivo `consumer.py`:
-
-```python
-from kafka import KafkaConsumer
-import json
-
-consumer = KafkaConsumer(
-    'simple-topic',
-    bootstrap_servers='localhost:9092',
-    auto_offset_reset='earliest',
-    enable_auto_commit=True,
-    value_deserializer=lambda v: json.loads(v.decode('utf-8'))
-)
-
-print("Listening for messages...")
-for message in consumer:
-    print(f"Received message: {message.value}")
-```
-
----
-
-## **6. Anexo I: Comandos básicos de Docker**
+## **5. Anexo I: Comandos básicos de Docker**
 
 - **Iniciar contenedores:** `docker-compose up -d`
 - **Detener contenedores:** `docker-compose down`
-- **Ver logs:** `docker logs kafka`
+- **Ver logs:** `docker logs kafka1`
 - **Acceso a un contenedor:** `docker exec -it kafka1 bash`
 
 ---
-
-
