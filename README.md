@@ -15,6 +15,7 @@ Apache Kafka es una plataforma distribuida de streaming diseñada para manejar g
 - Crear sistemas de mensajería distribuida.
 
 **Conceptos clave:**
+
 - **Broker:** Servidor que almacena y distribuye mensajes.
 - **Topic:** Canal donde se publican y consumen mensajes.
 - **Producer:** Publica mensajes en un topic.
@@ -30,7 +31,7 @@ Apache Kafka es una plataforma distribuida de streaming diseñada para manejar g
 
 Asegúrte de tener Docker y Docker Compose instalados en tu máquina. Puedes seguir las instrucciones oficiales en [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/).
 
-### **Paso 2: Crear el archivo `docker-compose.yml`**
+### \*\*Paso 2: Crear el archivo \*\***`docker-compose.yml`**
 
 Crea un directorio para el proyecto y dentro de él un archivo llamado `docker-compose.yml` con el siguiente contenido:
 
@@ -60,6 +61,7 @@ services:
 ```
 
 **Explicación:**
+
 - **Zookeeper** gestiona la coordinación entre los brokers.
 - **Kafka** es el broker principal que escucha en el puerto `9092`.
 
@@ -74,37 +76,47 @@ docker-compose up -d
 ### **Paso 4: Validar que el broker está levantado**
 
 1. **Verificar contenedores activos:**
+
    ```bash
    docker ps
    ```
+
    Asegúrte de que ambos servicios (Zookeeper y Kafka) estén en ejecución.
 
 2. **Listar topics en Kafka:**
+
    ```bash
    docker exec -it kafka kafka-topics --list --bootstrap-server localhost:9092
    ```
+
    Este comando no debe generar errores.
 
 3. **Probar conexión:**
    Publica un mensaje en un topic temporal:
+
    ```bash
    docker exec -it kafka kafka-console-producer --broker-list localhost:9092 --topic test-topic
    ```
+
    Escribe un mensaje como:
+
    ```
    Hello, Kafka!
    ```
+
    Luego, consúmelo:
+
    ```bash
    docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic test-topic --from-beginning
    ```
+
    Si ves el mensaje publicado, la configuración es correcta.
 
 ---
 
 ## **3. Ampliación: Configuración de un Clúster con 3 Brokers**
 
-### **Paso 1: Modificar el archivo `docker-compose.yml`**
+### \*\*Paso 1: Modificar el archivo \*\***`docker-compose.yml`**
 
 Actualiza el archivo para incluir dos brokers adicionales:
 
@@ -180,14 +192,17 @@ services:
 ### **Paso 2: Levantar el clúster**
 
 Ejecuta:
+
 ```bash
 docker-compose up -d
 ```
+
 Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
 
 ### **Paso 3: Implementar Kafdrop para la visualización del clúster**
 
 1. **Levantar Kafdrop junto con el clúster:**
+
    ```bash
    docker-compose up -d
    ```
@@ -196,6 +211,7 @@ Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
    Una vez levantado, abre un navegador y dirígete a `http://localhost:9000`.
 
 3. **Funciones principales de Kafdrop:**
+
    - Explorar topics, particiones y mensajes.
    - Ver consumidores y offsets.
    - Consultar información sobre brokers y configuraciones del clúster.
@@ -205,6 +221,7 @@ Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
 ## **4. Configuración de Topics**
 
 1. **Crear un topic simple:**
+
    ```bash
    docker exec -it kafka1 kafka-topics --create \
      --topic simple-topic \
@@ -214,6 +231,7 @@ Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
    ```
 
 2. **Crear un topic con particiones y réplicas:**
+
    ```bash
    docker exec -it kafka1 kafka-topics --create \
      --topic replicated-topic \
@@ -223,13 +241,34 @@ Esto creará un clúster con tres brokers: `kafka1`, `kafka2`, y `kafka3`.
    ```
 
 3. **Listar los topics existentes:**
+
    ```bash
    docker exec -it kafka1 kafka-topics --list --bootstrap-server kafka1:9092
    ```
 
 ---
 
-## **5. Anexo I: Comandos básicos de Docker**
+## **5. Ahora es tu turno**
+
+Te toca crear dos scripts en Python para interactuar con el clúster de Kafka que acabas de configurar:
+
+1. **Producer:** Crea un script que envíe un mensaje en formato JSON a un topic del clúster.
+
+   - El mensaje debe incluir al menos tres campos clave, como `id`, `timestamp` y `data`.
+   - Debes de crear un archivo local con multiples lineas en json. 
+   - El script debe de leer el archivo local y enviar cada linea json al topic.
+
+2. **Consumer:** Crea un script que consuma los mensajes de ese topic, convierta el formato JSON a CSV y guarde los resultados en un archivo local.
+
+**Consejos:**
+
+- Utiliza la librería `kafka-python` para conectarte al clúster.
+- Asegúrate de manejar errores como desconexiones del clúster o datos mal formateados.
+- Diseña el script del Consumer para que sea eficiente y maneje múltiples mensajes a la vez.
+
+---
+
+## **6. Anexo I: Comandos básicos de Docker**
 
 - **Iniciar contenedores:** `docker-compose up -d`
 - **Detener contenedores:** `docker-compose down`
