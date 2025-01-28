@@ -254,7 +254,7 @@ Te toca crear dos scripts en Python para interactuar con el clúster de Kafka qu
 
 1. **Producer:** Crea un script que envíe un mensaje en formato JSON a un topic del clúster.
 
-   - El mensaje debe incluir al menos tres campos clave, como `id`, `timestamp` y `data`.
+   - El mensaje debe incluir al menos tres campos clave, como `id`, `timestamp` y `data`. (en el repo hay un archivo json, si lo quieres utiliza. 
    - Debes de crear un archivo local con multiples lineas en json. 
    - El script debe de leer el archivo local y enviar cada linea json al topic.
 
@@ -276,3 +276,6 @@ Te toca crear dos scripts en Python para interactuar con el clúster de Kafka qu
 - **Acceso a un contenedor:** `docker exec -it kafka1 bash`
 
 ---
+
+Esta guía está completa y optimizada para un taller práctico. Si necesitas ajustes o contenido adicional, házmelo saber.
+
