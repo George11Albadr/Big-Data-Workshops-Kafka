@@ -1,0 +1,134 @@
+[
+    {
+        "id": 1,
+        "timestamp": "2019-03-02T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 235",
+            "fighter_1": "Jon Jones",
+            "fighter_2": "Anthony Smith",
+            "champion": "Jon Jones",
+            "title": "Light Heavyweight Championship"
+        }
+    },
+    {
+        "id": 2,
+        "timestamp": "2019-07-06T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 239",
+            "fighter_1": "Amanda Nunes",
+            "fighter_2": "Holly Holm",
+            "champion": "Amanda Nunes",
+            "title": "Bantamweight Championship"
+        }
+    },
+    {
+        "id": 3,
+        "timestamp": "2019-12-14T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 245",
+            "fighter_1": "Kamaru Usman",
+            "fighter_2": "Colby Covington",
+            "champion": "Kamaru Usman",
+            "title": "Welterweight Championship"
+        }
+    },
+    {
+        "id": 4,
+        "timestamp": "2020-05-09T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 249",
+            "fighter_1": "Justin Gaethje",
+            "fighter_2": "Tony Ferguson",
+            "champion": "Justin Gaethje",
+            "title": "Interim Lightweight Championship"
+        }
+    },
+    {
+        "id": 5,
+        "timestamp": "2020-07-11T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 251",
+            "fighter_1": "Kamaru Usman",
+            "fighter_2": "Jorge Masvidal",
+            "champion": "Kamaru Usman",
+            "title": "Welterweight Championship"
+        }
+    },
+    {
+        "id": 6,
+        "timestamp": "2021-03-06T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 259",
+            "fighter_1": "Jan B\u0142achowicz",
+            "fighter_2": "Israel Adesanya",
+            "champion": "Jan B\u0142achowicz",
+            "title": "Light Heavyweight Championship"
+        }
+    },
+    {
+        "id": 7,
+        "timestamp": "2021-04-24T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 261",
+            "fighter_1": "Kamaru Usman",
+            "fighter_2": "Jorge Masvidal",
+            "champion": "Kamaru Usman",
+            "title": "Welterweight Championship"
+        }
+    },
+    {
+        "id": 8,
+        "timestamp": "2022-10-22T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 280",
+            "fighter_1": "Islam Makhachev",
+            "fighter_2": "Charles Oliveira",
+            "champion": "Islam Makhachev",
+            "title": "Lightweight Championship"
+        }
+    },
+    {
+        "id": 9,
+        "timestamp": "2023-03-04T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 285",
+            "fighter_1": "Jon Jones",
+            "fighter_2": "Ciryl Gane",
+            "champion": "Jon Jones",
+            "title": "Heavyweight Championship"
+        }
+    },
+    {
+        "id": 10,
+        "timestamp": "2023-08-19T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 292",
+            "fighter_1": "Sean O'Malley",
+            "fighter_2": "Aljamain Sterling",
+            "champion": "Sean O'Malley",
+            "title": "Bantamweight Championship"
+        }
+    },
+    {
+        "id": 11,
+        "timestamp": "2023-11-11T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 295",
+            "fighter_1": "Alex Pereira",
+            "fighter_2": "Jiri Prochazka",
+            "champion": "Alex Pereira",
+            "title": "Light Heavyweight Championship"
+        }
+    },
+    {
+        "id": 12,
+        "timestamp": "2024-12-14T00:00:00Z",
+        "data": {
+            "ufc_event": "UFC 296",
+            "fighter_1": "Leon Edwards",
+            "fighter_2": "Colby Covington",
+            "champion": "Leon Edwards",
+            "title": "Welterweight Championship"
+        }
+    }
+]
