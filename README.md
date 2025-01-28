@@ -276,6 +276,3 @@ Te toca crear dos scripts en Python para interactuar con el clúster de Kafka qu
 - **Acceso a un contenedor:** `docker exec -it kafka1 bash`
 
 ---
-
-Esta guía está completa y optimizada para un taller práctico. Si necesitas ajustes o contenido adicional, házmelo saber.
-
