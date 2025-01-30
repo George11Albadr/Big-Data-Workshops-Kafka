@@ -1,17 +1,22 @@
 import json
 import time
 from kafka import KafkaProducer
+import os
 
-# Usamos localhost para conexiones fuera de Docker
-brokers = ["kafka1:9092", "kafka2:9093", "kafka3:9094"]
+# Definir los brokers desde el environment de Docker
+brokers = os.getenv("KAFKA_BROKERS", "kafka1:9092,kafka2:9093,kafka3:9094").split(",")
 
-producer = KafkaProducer(
-    bootstrap_servers=brokers,
-    value_serializer=lambda v: json.dumps(v).encode("utf-8"),
-    api_version=(2, 7, 0)
-)
+try:
+    producer = KafkaProducer(
+        bootstrap_servers=brokers,
+        value_serializer=lambda v: json.dumps(v).encode("utf-8")
+    )
+    print("🟢 Conectado correctamente a Kafka.")
+except Exception as e:
+    print("🔴 Error conectando a Kafka:", e)
+    exit(1)
 
-json_file = "/Users/georgealbadr/Documents/GitHub/Big-Data-Workshops-Kafka/ufc_championships_extended.json"
+json_file = "/app/ufc_championships_extended.json"
 
 def validate_json(record):
     required_keys = {"id", "timestamp", "data"}

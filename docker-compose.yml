@@ -70,3 +70,20 @@ services:
     environment:
       KAFKA_BROKER_CONNECT: "kafka1:9092,kafka2:9093,kafka3:9094"
       JVM_OPTS: "-Xms32M -Xmx64M"
+
+  python-app:
+    image: python:3.8
+    container_name: python-app
+    hostname: python-app
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - KAFKA_BROKERS=kafka1:9092,kafka2:9093,kafka3:9094
+    stdin_open: true  # Permite la interacción con el contenedor
+    tty: true         # Modo interactivo
+    command: /bin/bash -c "pip install kafka-python && tail -f /dev/null"

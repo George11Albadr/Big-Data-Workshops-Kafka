@@ -1,22 +1,28 @@
 import json
 import csv
 from kafka import KafkaConsumer
+import os
 
-# Usamos localhost para conexiones fuera de Docker
-brokers = ["kafka1:9092", "kafka2:9093", "kafka3:9094"]
+# Definir los brokers desde el environment de Docker
+brokers = os.getenv("KAFKA_BROKERS", "kafka1:9092,kafka2:9093,kafka3:9094").split(",")
 
-consumer = KafkaConsumer(
-    "simple-topic",
-    "replicated-topic",
-    bootstrap_servers=brokers,
-    value_deserializer=lambda v: json.loads(v.decode("utf-8")),
-    auto_offset_reset="earliest",
-    enable_auto_commit=True,
-    api_version=(2, 7, 0)
-)
+try:
+    consumer = KafkaConsumer(
+        "simple-topic",
+        "replicated-topic",
+        bootstrap_servers=brokers,
+        value_deserializer=lambda v: json.loads(v.decode("utf-8")),
+        enable_auto_commit=True
+    )
+    print("🟢 Conectado correctamente a Kafka.")
+except Exception as e:
+    print("🔴 Error conectando a Kafka:", e)
+    exit(1)
 
+# Definir el archivo de salida CSV
 csv_filename = "output.csv"
 
+# Verificar si el archivo ya existe y tiene encabezados
 write_header = True
 try:
     with open(csv_filename, "r") as f:
@@ -25,9 +31,11 @@ try:
 except FileNotFoundError:
     pass
 
+# Consumir mensajes y escribir en CSV
 with open(csv_filename, mode="a", newline="") as file:
     writer = csv.writer(file)
 
+    # Escribir encabezados si es la primera vez
     if write_header:
         writer.writerow(["id", "timestamp", "ufc_event", "fighter_1", "fighter_2", "champion", "title"])
 
