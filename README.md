@@ -276,3 +276,90 @@ Te toca crear dos scripts en Python para interactuar con el clúster de Kafka qu
 - **Acceso a un contenedor:** `docker exec -it kafka1 bash`
 
 ---
+
+## **7. Ejecución Manual de Producer y Consumer en Paralelo**
+
+Para monitorear cómo los datos fluyen en tiempo real desde el **Producer** hasta el **Consumer**, sigue estos pasos:
+
+---
+
+### **Paso 1: Ingresar al Contenedor de Python**
+Abre la **primera terminal** y ejecuta:
+
+```bash
+docker exec -it python-app bash
+```
+
+Esto te llevará dentro del contenedor `python-app`, donde correremos los scripts.
+
+---
+
+### **Paso 2: Ejecutar el Producer en la Primera Terminal**
+En la misma terminal, ejecuta el **Producer** para enviar datos a Kafka:
+
+```bash
+python producer.py
+```
+
+📤 **Salida esperada:**  
+Cada mensaje enviado se imprimirá en la terminal, indicando que se ha producido correctamente en los topics de Kafka.
+
+---
+
+### **Paso 3: Abrir una Segunda Terminal para el Consumer**
+Abre una **segunda terminal** y ejecuta el mismo comando para ingresar al contenedor:
+
+```bash
+docker exec -it python-app bash
+```
+
+Ahora, dentro del contenedor, ejecuta el **Consumer**:
+
+```bash
+python consumer.py
+```
+
+📥 **Salida esperada:**  
+Cada mensaje recibido desde Kafka se imprimirá en la terminal y se guardará en el archivo **output.csv** dentro del contenedor.
+
+---
+
+### **Paso 4: Verificar los Mensajes Consumidos**
+Para revisar los datos almacenados en el archivo CSV dentro del contenedor, usa:
+
+```bash
+cat output.csv
+```
+
+Si quieres copiar el archivo a tu máquina local:
+
+```bash
+docker cp python-app:/app/output.csv ./output.csv
+```
+
+---
+
+### **Paso 5: Reiniciar la Ejecución Fácilmente**
+Si deseas ejecutar el **Producer y Consumer nuevamente**, usa los siguientes comandos:
+
+#### **Reiniciar Producer**
+```bash
+docker exec -it python-app bash -c "python producer.py"
+```
+
+#### **Reiniciar Consumer**
+```bash
+docker exec -it python-app bash -c "python consumer.py"
+```
+
+---
+
+### **Paso 6: Detener y Reiniciar Todo el Clúster**
+Si en algún momento necesitas **detener todos los contenedores** y reiniciar el clúster de Kafka:
+
+```bash
+docker-compose down
+docker-compose up -d
+```
+
+Con estos pasos podrás monitorear en **tiempo real** cómo los mensajes son producidos y consumidos en Apache Kafka. 🚀
